@@ -133,6 +133,25 @@ function saveData() {
         </div>
       </div>
       <div class="flex flex-col w-1/2 items-end">
+        <button
+          onclick="window.print()"
+          class="bg-gray-800 text-white px-3 py-1 rounded-md"
+          type="button"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 inline-block mr-2"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3 2a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 100-2H4V3a1 1 0 00-1-1zm5 5a1 1 0 011 1v6a1 1 0 11-2 0V8a1 1 0 011-1zm5 0a1 1 0 011 1v6a1 1 0 11-2 0V8a1 1 0 011-1z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Print
+        </button>
         <h1 class="mt-12 text-4xl uppercase text-right mb-5">Invoice</h1>
         <input
           class="w-[200px] text-right"
