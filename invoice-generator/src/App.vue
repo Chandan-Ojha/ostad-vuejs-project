@@ -1,4 +1,90 @@
-<script setup></script>
+<script setup>
+import { reactive, computed } from "vue";
+import { invoice1, invoice2 } from "./data/data.js";
+const data = reactive({
+  sernder: "",
+  billTo: "",
+  shipTo: "",
+  invoiceNumber: "",
+  date: "",
+  dueDate: "",
+  additionalNote: "",
+  items: [
+    {
+      description: "",
+      quantity: "",
+      rate: "",
+      amount: "",
+    },
+  ],
+  notes: "",
+  terms: "",
+  subtotal: "",
+  tax: "",
+  total: "",
+  //balanceDue: "",
+});
+
+//sub total
+function getSubTotal() {
+  let subTotal = 0;
+  data.items.forEach((item) => {
+    subTotal += item.amount;
+  });
+  data.subtotal = subTotal;
+  return subTotal;
+}
+
+//total
+function getTotal() {
+  const tax = (data.subtotal * data.tax) / 100;
+  const total = data.subtotal + tax;
+  data.total = total;
+  return total;
+}
+
+//~ using computed
+/*const subTotal = computed(() => {
+  let subTotal = 0;
+  data.items.forEach((item) => {
+    subTotal += item.amount;
+  });
+  return subTotal;
+});*/
+
+//add item
+function addMoreItem() {
+  data.items.push({
+    description: "",
+    quantity: "",
+    rate: "",
+    amount: "",
+  });
+}
+
+//delete item
+function deleteItem(index) {
+  data.items.splice(index, 1);
+}
+
+//save item
+function saveData() {
+  console.log(data);
+  // fetch("http://localhost:3000/invoice", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(data),
+  // })
+  //   .then((res) => res.json())
+  //   .then((data) => console.log(data));
+}
+
+/*function updateAmount(item) {
+  item.amount = item.quantity * item.rate;
+}*/
+</script>
 
 <template>
   <section
@@ -14,15 +100,33 @@
           />
         </div>
         <p class="mt-5">Sender</p>
-        <textarea name="" id="" cols="30" rows="2"></textarea>
+        <textarea
+          name=""
+          id=""
+          cols="30"
+          rows="2"
+          v-model="data.sernder"
+        ></textarea>
         <div class="flex space-x-2">
           <div class="flex flex-col">
             <span>Bill to</span>
-            <textarea name="" id="" cols="30" rows="2"></textarea>
+            <textarea
+              name=""
+              id=""
+              cols="30"
+              rows="2"
+              v-model="data.billTo"
+            ></textarea>
           </div>
           <div class="flex flex-col">
             <span>Ship to</span>
-            <textarea name="" id="" cols="30" rows="2"></textarea>
+            <textarea
+              name=""
+              id=""
+              cols="30"
+              rows="2"
+              v-model="data.shipTo"
+            ></textarea>
           </div>
         </div>
       </div>
@@ -32,19 +136,24 @@
           class="w-[200px] text-right"
           type="text"
           placeholder="Invoice Number"
+          v-model="data.invoiceNumber"
         />
         <div class="mt-10 flex-y-5 text-right space-y-3 w-full">
           <p>
             <span>Date</span>
-            <input class="ml-2 w-[200px]" />
+            <input class="ml-2 w-[200px]" v-model="data.date" />
           </p>
           <p>
             <span>Due Date</span>
-            <input class="ml-2 w-[200px]" />
+            <input class="ml-2 w-[200px]" v-model="data.dueDate" />
           </p>
           <p>
             <span>Additional Note</span>
-            <input class="ml-2 w-[200px]" type="text" />
+            <input
+              class="ml-2 w-[200px]"
+              type="text"
+              v-model="data.additionalNote"
+            />
           </p>
         </div>
       </div>
@@ -57,38 +166,115 @@
           <th class="p-2">Rate</th>
           <th class="p-2 w-[200px] text-right pr-5">Amount</th>
         </tr>
-        <tr>
+        <tr v-for="(item, index) in data.items" :key="index">
           <td class="py-1">
-            <input class="w-full pl-5" type="text" placeholder="Description" />
+            <input
+              class="w-full pl-5"
+              type="text"
+              placeholder="Description"
+              v-model="item.description"
+            />
           </td>
           <td class="">
-            <input class="w-full" type="number" placeholder="Quantity" />
+            <input
+              class="w-full"
+              type="number"
+              placeholder="Quantity"
+              v-model="item.quantity"
+            />
           </td>
+          <!-- <td class="">
+            <input
+              class="w-full"
+              type="number"
+              placeholder="Rate"
+              v-model="item.rate"
+              @input="updateAmount(item)"
+            />
+          </td> -->
           <td class="">
-            <input class="w-full" type="number" placeholder="Rate" />
+            <input
+              class="w-full"
+              type="number"
+              placeholder="Rate"
+              v-model="item.rate"
+            />
           </td>
-          <td class="py-1 pr-5 text-right text-gray-800">$ 0.00</td>
+          <td class="py-1 pr-5 text-right text-gray-800">
+            <!-- <input type="text" v-model="item.amount" /> -->
+            $ {{ (item.amount = item.quantity * item.rate) }}
+          </td>
+          <td class="py-1 pr-5 text-right text-gray-800">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-gray-500 cursor-pointer"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              @click="deleteItem(index)"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </td>
         </tr>
       </table>
       <button
-        class="mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        @click="addMoreItem()"
+        class="ml-2 mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
         Add More
       </button>
+      <button
+        @click="saveData()"
+        class="ml-2 mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Save
+      </button>
+      <button
+        @click="Object.assign(data, invoice1)"
+        class="ml-2 mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Load Invoice 1
+      </button>
+      <button
+        @click="Object.assign(data, invoice2)"
+        class="ml-2 mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Load Invoice 2
+      </button>
+      <!-- <p class="mt-10">{{ data }}</p> -->
     </div>
     <div class="mt-[200px]">
       <div class="flex justify-between">
         <div class="flex flex-col space-y-5 w-1/2">
           <span>Notes</span>
-          <textarea name="" id="" cols="30" rows="2"></textarea>
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="2"
+            v-model="data.notes"
+          ></textarea>
           <span>Terms</span>
-          <textarea name="" id="" cols="30" rows="2"></textarea>
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="2"
+            v-model="data.terms"
+          ></textarea>
         </div>
         <div class="flex flex-col w-1/2 items-end">
           <div class="mt-10 flex-y-5 text-right space-y-3 w-full">
             <p>
               <span>Subtotal</span>
               <input
+                :value="getSubTotal()"
                 readonly
                 class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 w-[200px] border-0"
                 placeholder="Subtotal"
@@ -96,24 +282,29 @@
             </p>
             <p>
               <span>Tax</span>
-              <input type="number" class="tax text-right w-[200px] ml-2" />
+              <input
+                type="number"
+                class="tax text-right w-[200px] ml-2"
+                v-model="data.tax"
+              />
             </p>
             <p>
               <span>Total</span>
               <input
+                :value="getTotal()"
                 readonly
                 class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 w-[200px] border-0"
                 placeholder="Total"
               />
             </p>
-            <p>
+            <!-- <p>
               <span>Balace Due</span>
               <input
                 readonly
                 class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 w-[200px] border-0"
                 placeholder="Balance"
               />
-            </p>
+            </p> -->
           </div>
         </div>
       </div>
