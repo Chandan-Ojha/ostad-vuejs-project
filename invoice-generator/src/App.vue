@@ -14,6 +14,7 @@ const data = reactive({
       description: "",
       quantity: "",
       rate: "",
+      discount: "",
       amount: "",
     },
   ],
@@ -58,6 +59,7 @@ function addMoreItem() {
     description: "",
     quantity: "",
     rate: "",
+    discount: "",
     amount: "",
   });
 }
@@ -164,7 +166,9 @@ function saveData() {
           <th class="p-2 pl-5 w-1/2">Item</th>
           <th class="p-2">Quantity</th>
           <th class="p-2">Rate</th>
+          <th class="p-2">Discount</th>
           <th class="p-2 w-[200px] text-right pr-5">Amount</th>
+          <th class="p-2">Action</th>
         </tr>
         <tr v-for="(item, index) in data.items" :key="index">
           <td class="py-1">
@@ -200,9 +204,17 @@ function saveData() {
               v-model="item.rate"
             />
           </td>
+          <td class="">
+            <input
+              class="w-full"
+              type="number"
+              placeholder="Discount"
+              v-model="item.discount"
+            />
+          </td>
           <td class="py-1 pr-5 text-right text-gray-800">
             <!-- <input type="text" v-model="item.amount" /> -->
-            $ {{ (item.amount = item.quantity * item.rate) }}
+            $ {{ (item.amount = item.quantity * item.rate - item.discount) }}
           </td>
           <td class="py-1 pr-5 text-right text-gray-800">
             <svg
