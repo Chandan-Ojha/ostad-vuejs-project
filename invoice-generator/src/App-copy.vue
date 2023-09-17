@@ -1,15 +1,14 @@
 <script setup>
-import { reactive } from "vue";
-import axios from "axios";
-
-const invoice = reactive({
-  invoice_number: "",
-  sender: "",
-  bill_to: "",
-  ship_to: "",
+import { reactive, computed } from "vue";
+import { invoice1, invoice2 } from "./data/data.js";
+const data = reactive({
+  sernder: "",
+  billTo: "",
+  shipTo: "",
+  invoiceNumber: "",
   date: "",
-  due_date: "",
-  additional_note: "",
+  dueDate: "",
+  additionalNote: "",
   items: [
     {
       description: "",
@@ -21,32 +20,42 @@ const invoice = reactive({
   ],
   notes: "",
   terms: "",
-  sub_total: "",
+  subtotal: "",
   tax: "",
   total: "",
+  //balanceDue: "",
 });
 
 //sub total
 function getSubTotal() {
   let subTotal = 0;
-  invoice.items.forEach((item) => {
+  data.items.forEach((item) => {
     subTotal += item.amount;
   });
-  invoice.sub_total = subTotal;
+  data.subtotal = subTotal;
   return subTotal;
 }
 
 //total
 function getTotal() {
-  const tax = (invoice.sub_total * invoice.tax) / 100;
-  const total = invoice.sub_total + tax;
-  invoice.total = total;
+  const tax = (data.subtotal * data.tax) / 100;
+  const total = data.subtotal + tax;
+  data.total = total;
   return total;
 }
 
+//~ using computed
+/*const subTotal = computed(() => {
+  let subTotal = 0;
+  data.items.forEach((item) => {
+    subTotal += item.amount;
+  });
+  return subTotal;
+});*/
+
 //add item
 function addMoreItem() {
-  invoice.items.push({
+  data.items.push({
     description: "",
     quantity: "",
     rate: "",
@@ -57,64 +66,26 @@ function addMoreItem() {
 
 //delete item
 function deleteItem(index) {
-  invoice.items.splice(index, 1);
+  data.items.splice(index, 1);
 }
 
-//save  invoice to database
-function saveInvoice() {
-  const data = {
-    invoice_number: invoice.invoice_number,
-    sender: invoice.sender,
-    bill_to: invoice.bill_to,
-    ship_to: invoice.ship_to,
-    date: invoice.date,
-    due_date: invoice.due_date,
-    additional_note: invoice.additional_note,
-    items: invoice.items,
-    notes: invoice.notes,
-    terms: invoice.terms,
-    sub_total: invoice.sub_total,
-    tax: invoice.tax,
-    total: invoice.total,
-  };
-
-  let url = "http://localhost:8000/api/invoice-create";
-  axios
-    .post(url, { invoice: JSON.stringify(data) })
-    .then((res) => {
-      console.log(res.data.message);
-      alert("Invoice created successfully");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
-  clearInvoice();
+//save item
+function saveData() {
+  console.log(data);
+  // fetch("http://localhost:3000/invoice", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(data),
+  // })
+  //   .then((res) => res.json())
+  //   .then((data) => console.log(data));
 }
 
-function clearInvoice() {
-  invoice.invoice_number = "";
-  invoice.sender = "";
-  invoice.bill_to = "";
-  invoice.ship_to = "";
-  invoice.date = "";
-  invoice.due_date = "";
-  invoice.additional_note = "";
-  invoice.items = [
-    {
-      description: "",
-      quantity: "",
-      rate: "",
-      discount: "",
-      amount: "",
-    },
-  ];
-  invoice.notes = "";
-  invoice.terms = "";
-  invoice.sub_total = "";
-  invoice.tax = "";
-  invoice.total = "";
-}
+/*function updateAmount(item) {
+  item.amount = item.quantity * item.rate;
+}*/
 </script>
 
 <template>
@@ -136,7 +107,7 @@ function clearInvoice() {
           id=""
           cols="30"
           rows="2"
-          v-model="invoice.sender"
+          v-model="data.sernder"
         ></textarea>
         <div class="flex space-x-2">
           <div class="flex flex-col">
@@ -146,7 +117,7 @@ function clearInvoice() {
               id=""
               cols="30"
               rows="2"
-              v-model="invoice.bill_to"
+              v-model="data.billTo"
             ></textarea>
           </div>
           <div class="flex flex-col">
@@ -156,74 +127,53 @@ function clearInvoice() {
               id=""
               cols="30"
               rows="2"
-              v-model="invoice.ship_to"
+              v-model="data.shipTo"
             ></textarea>
           </div>
         </div>
       </div>
       <div class="flex flex-col w-1/2 items-end">
-        <div class="space-x-1.5">
-          <button
-            onclick="window.print()"
-            class="bg-gray-800 text-white px-3 py-1 rounded-md"
-            type="button"
+        <button
+          onclick="window.print()"
+          class="bg-gray-800 text-white px-3 py-1 rounded-md"
+          type="button"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 inline-block mr-2"
+            viewBox="0 0 20 20"
+            fill="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 inline-block mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M3 2a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 100-2H4V3a1 1 0 00-1-1zm5 5a1 1 0 011 1v6a1 1 0 11-2 0V8a1 1 0 011-1zm5 0a1 1 0 011 1v6a1 1 0 11-2 0V8a1 1 0 011-1z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            Print
-          </button>
-          <button
-            class="bg-gray-800 text-white px-3 py-1 rounded-md"
-            type="button"
-            @click="saveInvoice()"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 inline-block mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7l-4-4H5zm2 0h6l3 3v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm1 5a1 1 0 100 2h4a1 1 0 100-2H8z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            Save
-          </button>
-        </div>
+            <path
+              fill-rule="evenodd"
+              d="M3 2a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 100-2H4V3a1 1 0 00-1-1zm5 5a1 1 0 011 1v6a1 1 0 11-2 0V8a1 1 0 011-1zm5 0a1 1 0 011 1v6a1 1 0 11-2 0V8a1 1 0 011-1z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Print
+        </button>
         <h1 class="mt-12 text-4xl uppercase text-right mb-5">Invoice</h1>
         <input
           class="w-[200px] text-right"
           type="text"
           placeholder="Invoice Number"
-          v-model="invoice.invoice_number"
+          v-model="data.invoiceNumber"
         />
         <div class="mt-10 flex-y-5 text-right space-y-3 w-full">
           <p>
             <span>Date</span>
-            <input class="ml-2 w-[200px]" v-model="invoice.date" />
+            <input class="ml-2 w-[200px]" v-model="data.date" />
           </p>
           <p>
             <span>Due Date</span>
-            <input class="ml-2 w-[200px]" v-model="invoice.due_date" />
+            <input class="ml-2 w-[200px]" v-model="data.dueDate" />
           </p>
           <p>
             <span>Additional Note</span>
             <input
               class="ml-2 w-[200px]"
               type="text"
-              v-model="invoice.additional_note"
+              v-model="data.additionalNote"
             />
           </p>
         </div>
@@ -239,7 +189,7 @@ function clearInvoice() {
           <th class="p-2 w-[200px] text-right pr-5">Amount</th>
           <th class="p-2">Action</th>
         </tr>
-        <tr v-for="(item, index) in invoice.items" :key="index">
+        <tr v-for="(item, index) in data.items" :key="index">
           <td class="py-1">
             <input
               class="w-full pl-5"
@@ -256,6 +206,15 @@ function clearInvoice() {
               v-model="item.quantity"
             />
           </td>
+          <!-- <td class="">
+            <input
+              class="w-full"
+              type="number"
+              placeholder="Rate"
+              v-model="item.rate"
+              @input="updateAmount(item)"
+            />
+          </td> -->
           <td class="">
             <input
               class="w-full"
@@ -273,6 +232,7 @@ function clearInvoice() {
             />
           </td>
           <td class="py-1 pr-5 text-right text-gray-800">
+            <!-- <input type="text" v-model="item.amount" /> -->
             $ {{ (item.amount = item.quantity * item.rate - item.discount) }}
           </td>
           <td class="py-1 pr-5 text-right text-gray-800">
@@ -300,6 +260,25 @@ function clearInvoice() {
       >
         Add More
       </button>
+      <button
+        @click="saveData()"
+        class="ml-2 mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Save
+      </button>
+      <button
+        @click="Object.assign(data, invoice1)"
+        class="ml-2 mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Load Invoice 1
+      </button>
+      <button
+        @click="Object.assign(data, invoice2)"
+        class="ml-2 mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Load Invoice 2
+      </button>
+      <!-- <p class="mt-10">{{ data }}</p> -->
     </div>
     <div class="mt-[200px]">
       <div class="flex justify-between">
@@ -310,7 +289,7 @@ function clearInvoice() {
             id=""
             cols="30"
             rows="2"
-            v-model="invoice.notes"
+            v-model="data.notes"
           ></textarea>
           <span>Terms</span>
           <textarea
@@ -318,7 +297,7 @@ function clearInvoice() {
             id=""
             cols="30"
             rows="2"
-            v-model="invoice.terms"
+            v-model="data.terms"
           ></textarea>
         </div>
         <div class="flex flex-col w-1/2 items-end">
@@ -337,7 +316,7 @@ function clearInvoice() {
               <input
                 type="number"
                 class="tax text-right w-[200px] ml-2"
-                v-model="invoice.tax"
+                v-model="data.tax"
               />
             </p>
             <p>
@@ -349,6 +328,14 @@ function clearInvoice() {
                 placeholder="Total"
               />
             </p>
+            <!-- <p>
+              <span>Balace Due</span>
+              <input
+                readonly
+                class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 w-[200px] border-0"
+                placeholder="Balance"
+              />
+            </p> -->
           </div>
         </div>
       </div>
