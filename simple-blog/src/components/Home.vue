@@ -1,5 +1,7 @@
 <script setup>
-import { authStore } from "../store/store";
+// import { authStore } from "../store/store";
+import { authStore } from "../store/piniastore";
+const auth = authStore();
 </script>
 <template>
   <h1 class="text-2xl mb-3">This is home page</h1>
@@ -9,7 +11,7 @@ import { authStore } from "../store/store";
     possimus earum adipisci sunt accusantium autem. Saepe molestias quaerat
     enim. Autem.
   </p>
-  <p class="text-2xl mt-10" v-if="authStore.isAuthenticated">
+  <p class="text-2xl mt-10" v-if="auth.isAuthenticated">
     This is some screet content.
   </p>
 </template>

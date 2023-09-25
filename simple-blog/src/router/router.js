@@ -8,6 +8,9 @@ import Post from "../components/Post.vue";
 import Sidebar from "../components/Sidebar.vue";
 import Protected from "../components/Protected.vue";
 
+// import { authStore } from "../store/store";
+import { authStore } from "../store/piniastore";
+
 const routes = [
   {
     path: "/",
@@ -70,9 +73,9 @@ const routes = [
   },
 ];
 
-const isAuthenticated = () => {
-  return localStorage.getItem("token") == "123";
-};
+// const isAuthenticated = () => {
+//   return localStorage.getItem("token") == "123";
+// };
 
 const router = createRouter({
   history: createWebHistory(),
@@ -83,7 +86,8 @@ router.beforeEach((to, from, next) => {
   // console.log("To:", to);
   // console.log("From:", from);
   // next();
-  if (to.meta.requiresAuth && !isAuthenticated()) {
+  const auth = authStore();
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
     next("/login");
   } else {
     next();

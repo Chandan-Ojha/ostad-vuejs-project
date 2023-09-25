@@ -1,4 +1,5 @@
 import { ref, reactive } from "vue";
+
 const authStore = reactive({
   isAuthenticated: false,
   authenticated() {
