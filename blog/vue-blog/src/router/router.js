@@ -7,9 +7,11 @@ import Posts from "../components/Posts.vue";
 import Post from "../components/Post.vue";
 import Sidebar from "../components/Sidebar.vue";
 import Protected from "../components/Protected.vue";
+import Admin from "../components/Admin.vue";
+import Editor from "../components/Editor.vue";
 
-// import { authStore } from "../store/store";
-import { authStore } from "../store/piniastore";
+import { authStore } from "../store/store";
+// import { authStore } from "../store/piniastore";
 
 const routes = [
   {
@@ -33,6 +35,30 @@ const routes = [
     components: {
       default: About,
       LeftSideBar: Sidebar,
+    },
+  },
+
+  {
+    path: "/admin",
+    components: {
+      default: Admin,
+      LeftSideBar: Sidebar,
+    },
+    meta: {
+      requiresAuth: true,
+      role: "admin",
+    },
+  },
+
+  {
+    path: "/editor",
+    components: {
+      default: Editor,
+      LeftSideBar: Sidebar,
+    },
+    meta: {
+      requiresAuth: true,
+      role: "editor",
     },
   },
 
@@ -86,9 +112,12 @@ router.beforeEach((to, from, next) => {
   // console.log("To:", to);
   // console.log("From:", from);
   // next();
-  const auth = authStore();
+  const auth = authStore;
+
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     next("/login");
+  } else if (to.meta.role == "admin" && auth.user.role != "admin") {
+    next("/");
   } else {
     next();
   }

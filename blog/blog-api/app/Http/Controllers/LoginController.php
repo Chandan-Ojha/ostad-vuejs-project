@@ -18,7 +18,7 @@ class LoginController extends Controller
             return response()->json([
                 'user' => [
                     'id'=>1,
-                    'username'=>'Admin',
+                    'name'=>'Admin',
                     'role'=>'admin'
                 ]
             ]);
@@ -29,7 +29,7 @@ class LoginController extends Controller
             return response()->json([
                 'user' => [
                     'id'=>2,
-                    'username'=>'Editor',
+                    'name'=>'Editor',
                     'role'=>'editor'
                 ]
             ]);
