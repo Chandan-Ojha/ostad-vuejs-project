@@ -6,23 +6,23 @@ const authStore = reactive({
   user: JSON.parse(localStorage.getItem("user")),
 
   authenticate(username, password) {
-    fetch("http://127.0.0.1:8000/api/login", {
+    fetch("http://localhost:8000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: username,
-        password: password,
+        email: username,
+        password,
       }),
     })
       .then((res) => res.json())
       .then((res) => {
-        if (res.user) {
+        if (res.error == 0) {
           authStore.isAuthenticated = true;
-          authStore.user = res.user;
+          authStore.user = res;
           localStorage.setItem("auth", 1);
-          localStorage.setItem("user", JSON.stringify(res.user));
+          localStorage.setItem("user", JSON.stringify(res));
           router.push("/");
         }
       });
