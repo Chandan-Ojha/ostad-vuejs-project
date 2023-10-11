@@ -10,7 +10,7 @@ const Protected = () => import("../components/Protected.vue");
 const Admin = () => import("../components/Admin.vue");
 const Editor = () => import("../components/Editor.vue");
 
-import { authStore } from "../store/store";
+import { authStore } from "../store/authStore";
 
 const routes = [
   {

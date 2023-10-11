@@ -2,57 +2,44 @@
 import { useRoute } from "vue-router";
 import { reactive, ref, onBeforeMount } from "vue";
 import axios from "axios";
-const post = reactive({});
+const product = reactive({});
 
 const route = useRoute();
 const id = route.params.id;
-const comments = ref([]);
 
 onBeforeMount(() => {
-  // fetch(`https://dummyjson.com/posts/${id}`)
-  //   .then((res) => res.json())
-  //   .then((data) => {
-  //     post.id = data.id;
-  //     post.title = data.title;
-  //     post.body = data.body;
-  //   });
   axios
-    .get(`https://dummyjson.com/posts/${id}`)
+    .get(`http://localhost:8000/api/products/${id}`)
     .then((res) => {
-      post.id = res.data.id;
-      post.title = res.data.title;
-      post.body = res.data.body;
+      product.id = res.data.id;
+      product.title = res.data.title;
+      product.body = res.data.body;
+      product.image = res.data.image;
+      product.price = res.data.price;
+      product.description = res.data.description;
     })
     .catch((err) => {
       console.log(err);
     });
-
-  axios.get(`https://dummyjson.com/posts/${id}/comments`).then((res) => {
-    comments.value = res.data.comments;
-  });
 });
 </script>
+
 <template>
   <article class="mb-10">
     <h1 class="text-xl mb-2">
-      {{ post.title }}
+      {{ product.title }}
     </h1>
     <p>
-      <img :src="`//source.unsplash.com/random/300x200?${post.id}`" alt="" />
-      {{ post.body }}
+      <img class="w-60" :src="product.image" alt="" />
+      {{ product.description }}
+    </p>
+    <p>Price: ${{ product.price }}</p>
+    <p>
+      <button
+        class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Add To Cart
+      </button>
     </p>
   </article>
-  <article>
-    <h2 class="font-bold mb-2" v-if="comments.length > 0">Comments</h2>
-    <hr />
-    <ul class="mt-5">
-      <li v-for="comment in comments" :key="comment.id">
-        <p>
-          <strong>{{ comment.user.username }}</strong> said {{ comment.body }}
-        </p>
-      </li>
-    </ul>
-  </article>
 </template>
-
-<style></style>

@@ -1,5 +1,5 @@
 <script setup>
-import { authStore } from "../store/store";
+import { authStore } from "../store/authStore";
 const auth = authStore;
 </script>
 <template>
