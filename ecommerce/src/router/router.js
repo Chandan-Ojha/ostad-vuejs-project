@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../components/Home.vue";
-import Login from "../components/Login.vue";
-import About from "../components/About.vue";
-import Contact from "../components/Contact.vue";
-import Products from "../components/Products.vue";
-import Product from "../components/Product.vue";
-import Sidebar from "../components/Sidebar.vue";
-import Protected from "../components/Protected.vue";
-import Admin from "../components/Admin.vue";
-import Editor from "../components/Editor.vue";
+const Home = () => import("../components/Home.vue");
+const Login = () => import("../components/Login.vue");
+const About = () => import("../components/About.vue");
+const Contact = () => import("../components/Contact.vue");
+const Products = () => import("../components/Products.vue");
+const Product = () => import("../components/Product.vue");
+const Sidebar = () => import("../components/Sidebar.vue");
+const Protected = () => import("../components/Protected.vue");
+const Admin = () => import("../components/Admin.vue");
+const Editor = () => import("../components/Editor.vue");
 
 import { authStore } from "../store/store";
 
