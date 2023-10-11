@@ -1,7 +1,9 @@
 <script setup>
 import { ref, reactive, onBeforeMount } from "vue";
+import { cartStore } from "../store/cartStore";
 import axios from "axios";
 const products = ref([]);
+const cart = cartStore;
 
 function getSlug(title) {
   return title.toLowerCase().replace(/\s+/g, "-");
@@ -56,6 +58,7 @@ onBeforeMount(() => {
             </p>
           </div>
           <button
+            @click="cart.addItem(product)"
             class="mt-2 bg-blue-500 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded"
           >
             Add To Cart

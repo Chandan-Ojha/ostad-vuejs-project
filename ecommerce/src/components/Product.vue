@@ -1,8 +1,10 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { reactive, ref, onBeforeMount } from "vue";
+import { cartStore } from "../store/cartStore";
 import axios from "axios";
 const product = reactive({});
+const cart = cartStore;
 
 const route = useRoute();
 const id = route.params.id;
@@ -36,6 +38,7 @@ onBeforeMount(() => {
     <p>Price: ${{ product.price }}</p>
     <p>
       <button
+        @click="cart.addItem(product)"
         class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Add To Cart

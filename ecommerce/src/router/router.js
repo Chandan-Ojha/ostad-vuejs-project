@@ -7,6 +7,8 @@ const Products = () => import("../components/Products.vue");
 const Product = () => import("../components/Product.vue");
 const Sidebar = () => import("../components/Sidebar.vue");
 const Protected = () => import("../components/Protected.vue");
+const Cart = () => import("../components/Cart.vue");
+
 const Admin = () => import("../components/Admin.vue");
 const Editor = () => import("../components/Editor.vue");
 
@@ -73,6 +75,14 @@ const routes = [
     path: "/products",
     components: {
       default: Products,
+      LeftSideBar: Sidebar,
+    },
+  },
+
+  {
+    path: "/cart",
+    components: {
+      default: Cart,
       LeftSideBar: Sidebar,
     },
   },
