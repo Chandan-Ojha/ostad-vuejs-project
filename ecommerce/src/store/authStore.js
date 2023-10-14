@@ -1,6 +1,7 @@
 import { reactive } from "vue";
 import router from "../router/router";
 import { cartStore } from "./cartStore";
+import { wishlistStore } from "./wishlistStore";
 
 const authStore = reactive({
   isAuthenticated: localStorage.getItem("auth") == 1,
@@ -31,14 +32,20 @@ const authStore = reactive({
 
   logout() {
     const cart = cartStore;
+    const wishlist = wishlistStore;
     authStore.isAuthenticated = false;
     authStore.user = {};
     localStorage.setItem("auth", 0);
     localStorage.setItem("user", "{}");
     cart.items = {};
-    cart.totalPrice = 0;
+    // cart.totalPrice = 0;
     cart.saveCartInLocalStorage();
+    wishlist.items = [];
     router.push("/login");
+  },
+
+  getUserToken() {
+    return authStore.user.token;
   },
 });
 
