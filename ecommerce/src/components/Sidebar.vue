@@ -23,10 +23,8 @@ const cart = cartStore;
       <li>
         <router-link to="/cart">Cart ({{ cart.totalCartItems }})</router-link>
       </li>
-      <li>
-        <router-link v-if="auth.isAuthenticated" to="/orders">
-          Orders
-        </router-link>
+      <li v-if="auth.isAuthenticated">
+        <router-link to="/orders"> Orders </router-link>
       </li>
       <li>
         <router-link to="/protected">Protected</router-link>
