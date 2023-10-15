@@ -3,8 +3,8 @@ import { ref } from "vue";
 import { authStore } from "../store/authStore";
 const auth = authStore;
 
-const username = ref("");
-const password = ref("");
+const username = ref("john@doe.com");
+const password = ref("12345");
 </script>
 <template>
   <div class="mt-10">
