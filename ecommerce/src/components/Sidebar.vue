@@ -24,6 +24,11 @@ const cart = cartStore;
         <router-link to="/cart">Cart ({{ cart.totalCartItems }})</router-link>
       </li>
       <li>
+        <router-link v-if="auth.isAuthenticated" to="/orders">
+          Orders
+        </router-link>
+      </li>
+      <li>
         <router-link to="/protected">Protected</router-link>
       </li>
       <li v-if="auth.user?.role == 'admin'">

@@ -8,6 +8,7 @@ const orderStore = reactive({
   async fetchOrders() {
     const apiUrl = "http://localhost:8000/api/orders";
     const token = authStore.getUserToken();
+
     if (!token) {
       return;
     }
@@ -29,6 +30,7 @@ const orderStore = reactive({
       this.orders = ordersData.map((order) => ({
         id: order.id,
         userId: order.user_id,
+        showProducts: false,
         totalAmount: order.total_amount,
         products: order.products.map((productInfo) => ({
           id: productInfo.id,
@@ -47,6 +49,7 @@ const orderStore = reactive({
   async placeOrder(totalPrice, items) {
     const apiUrl = "http://localhost:8000/api/orders";
     const token = authStore.getUserToken();
+
     if (!token) {
       return;
     }
@@ -71,6 +74,7 @@ const orderStore = reactive({
         },
         body: JSON.stringify(payload),
       });
+      this.fetchOrders();
     } catch (error) {
       console.error("Error placing order:", error);
     }
