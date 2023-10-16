@@ -28,8 +28,10 @@ const auth = authStore;
       <router-view name="LeftSideBar"></router-view>
     </aside>
     <main class="w-full min-h-screen p-5">
+      <!-- <router-view :key="$route.fullPath"></router-view> -->
       <router-view></router-view>
     </main>
+    <router-view name="RightSideBar"></router-view>
   </section>
   <footer></footer>
 </template>

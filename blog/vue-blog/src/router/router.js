@@ -6,6 +6,7 @@ import Contact from "../components/Contact.vue";
 import Posts from "../components/Posts.vue";
 import Post from "../components/Post.vue";
 import Sidebar from "../components/Sidebar.vue";
+import RightSidebar from "../components/RightSidebar.vue";
 import Protected from "../components/Protected.vue";
 import Admin from "../components/Admin.vue";
 import Editor from "../components/Editor.vue";
@@ -20,6 +21,7 @@ const routes = [
       default: Home,
       LeftSideBar: Sidebar,
     },
+    name: "home",
   },
 
   {
@@ -28,6 +30,7 @@ const routes = [
       default: Login,
       LeftSideBar: Sidebar,
     },
+    name: "login",
   },
 
   {
@@ -36,6 +39,7 @@ const routes = [
       default: About,
       LeftSideBar: Sidebar,
     },
+    name: "about",
   },
 
   {
@@ -44,6 +48,7 @@ const routes = [
       default: Admin,
       LeftSideBar: Sidebar,
     },
+    name: "admin",
     meta: {
       requiresAuth: true,
       role: "admin",
@@ -56,6 +61,7 @@ const routes = [
       default: Editor,
       LeftSideBar: Sidebar,
     },
+    name: "editor",
     meta: {
       requiresAuth: true,
       role: "editor",
@@ -68,6 +74,7 @@ const routes = [
       default: Contact,
       LeftSideBar: Sidebar,
     },
+    name: "contact",
   },
 
   {
@@ -75,7 +82,19 @@ const routes = [
     components: {
       default: Posts,
       LeftSideBar: Sidebar,
+      RightSideBar: RightSidebar,
     },
+    name: "posts",
+  },
+
+  {
+    path: "/posts/tag/:tag",
+    components: {
+      default: Posts,
+      LeftSideBar: Sidebar,
+      RightSideBar: RightSidebar,
+    },
+    name: "tag",
   },
 
   {
@@ -93,6 +112,7 @@ const routes = [
       default: Protected,
       LeftSideBar: Sidebar,
     },
+    name: "protected",
     meta: {
       requiresAuth: true,
     },
