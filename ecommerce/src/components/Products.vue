@@ -45,10 +45,12 @@ onBeforeMount(() => {
           <div
             class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80"
           >
-            <img
-              :src="product.image"
-              class="h-full w-full object-cover object-center lg:h-full lg:w-full"
-            />
+            <router-link :to="{ name: 'product', params: { id: product.id } }">
+              <img
+                :src="product.image"
+                class="h-full w-full object-cover object-center lg:h-full lg:w-full"
+              />
+            </router-link>
           </div>
           <div class="mt-4 flex justify-between">
             <div>
