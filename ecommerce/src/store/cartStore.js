@@ -1,8 +1,13 @@
 import { reactive, computed } from "vue";
+import { authStore } from "./authStore";
 import { orderStore } from "./orderStore";
 
 const cartStore = reactive({
   items: {},
+  couponCode: "20OFF",
+  discountInPercentage: 0,
+  discountApplied: false,
+  originalPrice: 0,
 
   //count total items in cart
   totalCartItems: computed(() => {
@@ -19,6 +24,12 @@ const cartStore = reactive({
     for (let id in cartStore.items) {
       total += cartStore.items[id].product.price * cartStore.items[id].quantity;
     }
+    cartStore.originalPrice = total.toFixed(2);
+    //calculate discount
+    if (cartStore.discountApplied) {
+      total = total - (total * cartStore.discountInPercentage) / 100;
+    }
+
     return parseFloat(total.toFixed(2));
   }),
 
@@ -58,6 +69,49 @@ const cartStore = reactive({
   checkout() {
     const order = orderStore;
     order.placeOrder(this.totalPrice, this.items);
+  },
+
+  //apply coupon code for discount
+  async applyCoupon() {
+    const apiUrl = "http://localhost:8000/api/coupon";
+    const token = authStore.getUserToken();
+
+    if (!token) {
+      return;
+    }
+
+    const payload = {
+      coupon: this.couponCode,
+    };
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const couponData = await response.json();
+      if (couponData.value != 0) {
+        this.discountApplied = true;
+        this.discountInPercentage = couponData.value;
+      }
+    } catch (error) {
+      console.error("Apply coupon code error", error);
+    }
+  },
+
+  //remove coupon
+  removeCoupon() {
+    this.discountApplied = false;
+    this.discountInPercentage = 0;
   },
 });
 
