@@ -4,7 +4,7 @@ import { orderStore } from "./orderStore";
 
 const cartStore = reactive({
   items: {},
-  couponCode: "20OFF",
+  couponCode: "NEWUSER",
   discountInPercentage: 0,
   discountApplied: false,
   originalPrice: 0,
